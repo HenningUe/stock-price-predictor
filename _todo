@@ -1,0 +1,16 @@
+> twelvedata und yahoo
+	> GEMACHT: Regelmaessiges Daten holen und ablegen
+
+> Fuer alle Datenpakete:
+	> GEMACHT: ueberführen in Pandas; 
+		> GEMACHT: Pandas kennenlernen
+	> GEMACHT: Daten auf 5 minuten ausrichten
+	> GEMACHT: Leere 5 min-Stellen auf 0 setzen
+	> GEMACHT: Daten absolut speichern
+	> GEMACHT: Daten für Verarbeitung auf Relative Werte sezten, d.h. auf ein normierte relative Steigung vom Ausgangswert
+		GEMACHT: > Bereich 0..1 > "1" entspricht durchschnittliche Steigung pro Woche
+
+
+> Schwelle berechnen, die signifikant weniger häufig auftritt als die restlichen Prozentualen Tagesabweichungen 
+
+> Berechnen Trainings-Datensätze holen

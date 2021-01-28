@@ -1,0 +1,16 @@
+https://polygon.io/stocks
+
+# uekoetter@gmail.com
+# datagiglII!>>:-)
+
+# _9OLGNWHtV6TQU4GKdzKx65sgDvOtvpm
+
+https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2020-06-01/2020-06-17?apiKey=YOURKEY
+
+https://api.polygon.io/v2/reference/markets?apiKey=_9OLGNWHtV6TQU4GKdzKx65sgDvOtvpm
+
+https://api.polygon.io/v2/reference/types?apiKey=_9OLGNWHtV6TQU4GKdzKx65sgDvOtvpm
+
+# Gut aber keine Futures
+
+https://api.polygon.io/v2/aggs/ticker/SPY/range/5/minutes/2020-11-23/2020-11-23?unadjusted=false&sort=asc&limit=10&apiKey=_9OLGNWHtV6TQU4GKdzKx65sgDvOtvpm

@@ -1,0 +1,10 @@
+https://firstratedata.com/
+
+symbol
+
+S&P500
+https://firstratedata.com/i/index/SPX
+
+ES (E-Mini S&P 500) Continuous futures : First Date:6-Sep-2005 _ Last Date:30-Oct-2020
+https://firstratedata.com/i/futures/ES
+
