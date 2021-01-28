@@ -4,7 +4,7 @@ import pathlib
 import yaml
 import pickle
 
-from _misc_frogs.filesnfolders import get_storage_root_folder
+from _misc_frogs.environment import get_data_dump_root_folder
 from _misc_frogs.make_hash import make_hash
 
 
@@ -57,7 +57,7 @@ def _get_storage_dir_path(params):
     params = copy.copy(params)
     params.pop('max_evals')
     hash_val = _get_hash(params)
-    root_dir = get_storage_root_folder()
+    root_dir = get_data_dump_root_folder()
     dir_ = pathlib.Path(root_dir).joinpath("hyperopt", hash_val)
     return dir_
 

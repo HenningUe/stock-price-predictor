@@ -7,9 +7,9 @@ import sys
 import logging
 from logging.handlers import RotatingFileHandler
 
-from _misc_frogs import logfilehandlerwithoutinherit  # @UnusedImport
 from _misc_frogs import str_rescue
-from _misc_frogs.filesnfolders import get_storage_root_folder
+from _misc_frogs.environment import get_data_dump_root_folder
+from . import _logfilehandlerwithoutinherit  # @UnusedImport
 
 _singleton = None
 LOGGER_NAME_DEFAULT = "StockFrog"
@@ -102,29 +102,9 @@ class LoggerClass(object):
 
     def _get_logger_path(self):
         REL_LOG_PATH = r'logs'
-        storage_root = get_storage_root_folder()
+        storage_root = get_data_dump_root_folder()
         log_dir = storage_root.joinpath(REL_LOG_PATH)
         return log_dir
-
-
-class _RemoveDuplicateFilter(logging.Filter):
-
-    def __init__(self, *args, **kwargs):
-        super(_RemoveDuplicateFilter, self).__init__(*args, **kwargs)
-        self._last_record = None
-
-    def filter(self, record):
-        return self._record_differs_from_last(record)
-
-    def _record_differs_from_last(self, record):
-        return not \
-           (record.created == self._last_record.created and
-            record.levelno == self._last_record.levelno and
-            record.funcName == self._last_record.funcName and
-            record.msg == self._last_record.msg and
-            record.filename == self._last_record.filename and
-            record.module == self._last_record.module and
-            record.name == self._last_record.name)
 
 
 class RotatingFileHandler2(RotatingFileHandler):
@@ -174,7 +154,7 @@ class StreamHandler2(logging.StreamHandler):
             stream = self.stream
             fs = "%s\n"
             try:
-                if (isinstance(msg, str) and getattr(stream, 'encoding', None)):
+                if (isinstance(msg, bytes) and getattr(stream, 'encoding', None)):
                     ufs = u'%s\n'
                     try:
                         self._write(ufs % msg)

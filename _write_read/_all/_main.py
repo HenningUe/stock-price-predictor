@@ -3,7 +3,7 @@ import datetime
 import pandas as pd
 from pandas.tseries.offsets import BDay
 
-from _misc_frogs.filesnfolders import get_storage_root_folder
+from _misc_frogs.environment import get_data_source_root_folder
 
 _DATETIME_CONV = "%Y/%m/%d %H:%M:%S"
 
@@ -56,5 +56,5 @@ class FileNFolderProvider:
         self.data_segmentation_type = data_segmentation_type
 
     def get_folder(self, postfix=""):
-        rdir = get_storage_root_folder()
+        rdir = get_data_source_root_folder()
         return rdir.joinpath(self.data_segmentation_type, self.symbol + postfix)

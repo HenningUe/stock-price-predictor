@@ -4,7 +4,7 @@ import pickle
 import yaml
 import functools
 
-from _misc_frogs.filesnfolders import get_storage_root_folder
+from _misc_frogs.environment import get_data_source_root_folder
 from _misc_frogs.make_hash import make_hash
 
 _Y_M_D_STRF = "%Y-%m-%d"
@@ -71,7 +71,7 @@ def _get_storage_file_path(data_set_spec, date_start, date_end, time_range, samp
 
 def _get_storage_dir_path(data_set_spec, date_start, date_end, time_range, sample_period_in_min, overlapping):
     hash_val = _get_hash(data_set_spec, date_start, date_end, time_range, sample_period_in_min, overlapping)
-    root_dir = get_storage_root_folder()
+    root_dir = get_data_source_root_folder()
     dir_ = pathlib.Path(root_dir).joinpath("cached", hash_val)
     return dir_
 
