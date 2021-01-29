@@ -34,10 +34,10 @@ def run_single_module(train_mod):
     for func_space in space:
         if RUN_MDL_FUNCS_INDIVIDUAL:
             logger.info("Running hyperopt space for func: {}".format(func_space['funcname']))
-        run_single_scenario(train_mod, func_space)
+        _run_single_scenario(train_mod, func_space)
 
 
-def run_single_scenario(train_mod, space):
+def _run_single_scenario(train_mod, space):
     global MAX_EVALUATIONS
     logger = loggermod.get_logger()
     max_evals = MAX_EVALUATIONS

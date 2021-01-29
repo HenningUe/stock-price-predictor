@@ -59,8 +59,8 @@ class FolderGetterColab:
 
     @classmethod
     def get_data_source_root_folder(cls):
-        raise NotImplementedError()
+        return "/content/gdrive/My Drive/Colab/DataFrogDataSource"
 
     @classmethod
     def get_data_dump_root_folder(cls):
-        raise NotImplementedError()
+        return "/content/gdrive/My Drive/Colab/DataFrogDump"

@@ -54,7 +54,8 @@ def _create_info_file(data_set_spec, date_start, date_end, time_range, sample_pe
                 symbols=[s['name'] for s in data_set_spec['symbols']],
                 label_symbol=data_set_spec['label_symbol'],
                 time_range=str(time_range),
-                sample_period_in_min=str(sample_period_in_min),
+                sample_period_in_min=sample_period_in_min,
+                length_in_days=data_set_spec['length_in_days'],
                 overlapping=overlapping)
     dir_ = _get_storage_dir_path(data_set_spec, date_start, date_end, time_range, sample_period_in_min, overlapping)
     file_ = pathlib.Path(dir_).joinpath("cached_data.txt")

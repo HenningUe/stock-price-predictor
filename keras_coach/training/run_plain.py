@@ -15,7 +15,7 @@ def main():
     swish.register_swish_activation_func()
     train_mod = _get_train_module()
     print("Get training data")
-    training_data_length_in_days = 5
+    training_data_length_in_days = 7
     x_train_data, y_label_df_raw = traindata.get_training_data(training_data_length_in_days)
     y_label_data = train_mod.extract_np_labels_from_df_raw(y_label_df_raw)
 
