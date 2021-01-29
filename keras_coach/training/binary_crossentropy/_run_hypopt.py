@@ -39,7 +39,7 @@ def objective_func(x_train_data, y_label_df_raw, params):
         callb = EarlyStoppingCustom(dict(x=data['x_validate'], y=data['y_validate']))
         MAX_EPOCHS = 100
         model.fit(data['x_train'], data['y_train'],
-                  epochs=MAX_EPOCHS,
+                  epochs=MAX_EPOCHS, verbose=False,
                   validation_data=(data['x_validate'], data['y_validate']),
                   callbacks=[callb], class_weight=class_weights)
 

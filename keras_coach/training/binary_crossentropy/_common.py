@@ -11,5 +11,6 @@ def extract_np_labels_from_df_raw(df_labels):
 
 def get_class_weights(y_train):
     class_weights = \
-        class_weight.compute_class_weight('balanced', np.unique(y_train), y_train)
+        class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(y_train), y=y_train)
+    class_weights = {0: class_weights[0], 1: class_weights[1]}
     return class_weights

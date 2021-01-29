@@ -1,38 +1,36 @@
 
 import keras
 
+from _misc_frogs import loggermod
 from ._predict_test import test_predict
-
-_best_guess = list()
-_best_weights = list()
-
-
-def get_test_prediction_results():
-    global _best_guess, _best_weights
-    return _best_guess, _best_weights
 
 
 class EarlyStoppingCustom(keras.callbacks.Callback):
-    """Stop training when the loss is at its min, i.e. the loss stops decreasing.
 
-  Arguments:
-      patience: Number of epochs to wait after min has been hit. After this
-      number of no improvement, training stops.
-  """
-
-    def __init__(self, test_x, test_y):
+    def __init__(self,
+                 complete_test_data,
+                 patience=4,
+                 restore_best_weights=True):
         super().__init__()
-        self.test_x = test_x
-        self.test_y = test_y
-        self.best_guess = list()
-        self.best_weights = list()
+        self.complete_test_data = complete_test_data
+        self.patience = patience
+        self.wait = 0
+        self.stopped_epoch = 0
+        self.restore_best_weights = restore_best_weights
+        self.guesses = list()
+        self.best_guess = None
+        self.best_weights = None
+        self._logger = loggermod.get_logger()
 
     def on_train_begin(self, logs=None):
-        self.best_guess = list()
+        # Allow instances to be re-used
+        self.wait = 0
+        self.stopped_epoch = 0
+        self.best_weights = None
 
     def on_epoch_end(self, epoch, logs=None):
         # current = logs.get("loss")
-        result = test_predict(self.model, self.test_x, self.test_y)
+        result = test_predict(self.model, self.complete_test_data['x'], self.complete_test_data['y'])
         if result['usable_rate'] is not None:
             store_result = True
 #             if self.best_guess is None:

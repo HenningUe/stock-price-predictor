@@ -11,7 +11,7 @@ class EarlyStoppingCustom(keras.callbacks.Callback):
                  complete_test_data,
                  patience=4,
                  restore_best_weights=True):
-        super(EarlyStoppingCustom, self).__init__()
+        super().__init__()
         self.complete_test_data = complete_test_data
         self.patience = patience
         self.wait = 0

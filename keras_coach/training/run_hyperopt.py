@@ -46,7 +46,8 @@ def _run_single_scenario(train_mod, space):
     f_nn = obj_func_wrapper.get_objective_func_wrapped(train_mod)
     algo_func = hypopt.tpe.suggest
     trials = hypopt.Trials()
-    best_trial = hypopt.fmin(f_nn, space, algo=algo_func, max_evals=max_evals, trials=trials)
+    best_trial = hypopt.fmin(f_nn, space, algo=algo_func, max_evals=max_evals,
+                             trials=trials, verbose=True)
 
     params = dict(train_module=misc.get_modul_name_pure(train_mod), max_evals=max_evals,
                   algo_func=".".join([algo_func.__module__, algo_func.__name__]))
