@@ -45,8 +45,8 @@ def objective_func(x_train_data, y_label_df_raw, params):
 
         if callb.best_guess is not None:
             save_mdl_params = dict(epoch=callb.best_guess['epoch'],
-                                   reference_value=float(callb.best_guess['precision_total']))
-        acc = -float(callb.best_guess['precision_total'])
+                                   reference_value=float(callb.best_guess['rate_of_elems_matching_vs_all_relevant_real_elems']))
+        acc = -float(callb.best_guess['rate_of_elems_matching_vs_all_relevant_real_elems'])
 
     return dict(acc=acc, model=model, save_mdl_params=save_mdl_params)
 

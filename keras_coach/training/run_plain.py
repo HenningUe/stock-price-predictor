@@ -55,7 +55,7 @@ def main():
                       model_build_func=build_model_func.__name__,
                       epoch=callb.best_guess['epoch'],
                       length_in_days=training_data_length_in_days,
-                      reference_value=float(callb.best_guess['precision_total']))
+                      reference_value=float(callb.best_guess['reference_value']))
         model_store.save_model(model, params, callb.best_guess)
     pprint(callb.guesses)
 

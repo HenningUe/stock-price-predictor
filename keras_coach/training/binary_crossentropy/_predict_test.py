@@ -20,10 +20,11 @@ def test_predict(model, x_test, y_test):
 
     rate_of_elems_matching_vs_all_relevant_real_elems = \
         (rtn_for_positives['rate_of_elems_matching_vs_all_relevant_real_elems']
-         +rtn_for_negatives['rate_of_elems_matching_vs_all_relevant_real_elems']) / 2  # @IgnorePep8
+         +rtn_for_negatives['rate_of_elems_matching_vs_all_relevant_real_elems']) / 2.0  # @IgnorePep8
 
     rtn_dict = \
-        dict(rate_of_elems_matching_vs_all_relevant_real_elems=rate_of_elems_matching_vs_all_relevant_real_elems,
+        dict(reference_value=rate_of_elems_matching_vs_all_relevant_real_elems,
+             rate_of_elems_matching_vs_all_relevant_real_elems=rate_of_elems_matching_vs_all_relevant_real_elems,
 
              rate_of_elems_matching_vs_all_relevant_real_elems_for_positives=  # @IgnorePep8
                 rtn_for_positives['rate_of_elems_matching_vs_all_relevant_real_elems'],  # @IgnorePep8
@@ -66,17 +67,17 @@ def _get_number_of_prediction_matches_of_top_scores(test_predict_real_combined_a
     number_of_test_elements_matching = prediction_match_count
     total_elements_checked = elems_checked_count
     total_match_rate_for_testet_elems = number_of_test_elements_matching / total_elements_checked
-    rate_of_elems_matching_vs_all_relevant_real_elems = 0
+    rate_of_elems_matching_vs_all_relevant_real_elems = 0.0
     usable_prediction_rate = None
     if number_of_test_elements_matching > 0 \
        and total_match_rate_for_testet_elems >= MIN_RATE_OF_MATCHING_PREDICTIONS_ON_TEST_DATA:
         rate_of_elems_matching_vs_all_relevant_real_elems = \
-            number_of_test_elements_matching / total_real_elems_acc_to_must_be_prediction
-        usable_prediction_rate = test_predict_real_combined_as_mtx_sorted_by_predict[i - 1][0]
+            float(number_of_test_elements_matching / total_real_elems_acc_to_must_be_prediction)
+        usable_prediction_rate = float(test_predict_real_combined_as_mtx_sorted_by_predict[i - 1][0])
     return dict(rate_of_elems_matching_vs_all_relevant_real_elems=rate_of_elems_matching_vs_all_relevant_real_elems,
                 usable_prediction_rate=usable_prediction_rate,
-                number_of_test_elements_matching=number_of_test_elements_matching,
-                total_elements_checked=total_elements_checked)
+                number_of_test_elements_matching=int(number_of_test_elements_matching),
+                total_elements_checked=int(total_elements_checked))
 
 
 def _get_matching_item_count_of_real_values(test_predict_real_combined_as_mtx, must_be_prediction,
