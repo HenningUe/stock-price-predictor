@@ -4,8 +4,9 @@ from pprint import pprint  # @UnusedImport
 
 import hyperopt as hypopt
 
-from _misc_frogs import loggermod, environment, hyperopt_monkeyp  # @UnusedImport
-from keras_coach.training._all import debug, hyperopt_store, swish, misc
+from _misc_frogs import loggermod, environment
+from keras_coach.training._all import debug, hyperopt_store, swish, misc, colab_hw
+from keras_coach.training._all import hyperopt_monkeyp  # @UnusedImport
 from keras_coach.training._all.models_hyperopt import obj_func_wrapper, space_and_mdl_templates
 
 MAX_EVALUATIONS = 200 if environment.runs_in_colab() else 20
@@ -31,6 +32,7 @@ def run_single_module(train_mod):
     logger.info("Is 'HYPEROPT_SIMULATE': {}".format(debug.HYPEROPT_SIMULATE))
     logger.info("Is 'RUN_MDL_FUNCS_INDIVIDUAL': {}".format(RUN_MDL_FUNCS_INDIVIDUAL))
     logger.info("'MAX_EVALUATIONS': {}".format(MAX_EVALUATIONS))
+    logger.info("User colab hardware: {}".format(colab_hw.get_hw_support_type()))
     space = space_and_mdl_templates.get_hyperopt_space(get_functions_individual=RUN_MDL_FUNCS_INDIVIDUAL)
     for func_space in space:
         if RUN_MDL_FUNCS_INDIVIDUAL:
