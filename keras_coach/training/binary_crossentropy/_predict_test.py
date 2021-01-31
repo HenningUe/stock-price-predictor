@@ -48,15 +48,16 @@ def _get_number_of_prediction_matches_of_top_scores(test_predict_real_combined_a
 
     total_real_elems_acc_to_must_be_prediction = \
         _get_matching_item_count_of_real_values(test_predict_real_combined_as_mtx, must_be_prediction)
-    test_predict_real_combined_as_mtx = \
-        _get_relevant_test_prediction_items(test_predict_real_combined_as_mtx, must_be_prediction)
 
     sort_direction = 'descending' if must_be_prediction == 1 else 'ascending'
     test_predict_real_combined_as_mtx_sorted_by_predict = \
         _sort_matrix(test_predict_real_combined_as_mtx, sort_direction)
+    test_predict_real_combined_as_mtx_sorted_by_predict = \
+        test_predict_real_combined_as_mtx_sorted_by_predict[:total_real_elems_acc_to_must_be_prediction]
 
-    MIN_RATE_OF_MATCHING_PREDICTIONS_ON_TEST_DATA = 0.85  # = 85%
+    MIN_RATE_OF_MATCHING_PREDICTIONS_ON_TEST_DATA = 0.65  # = 65%
     prediction_match_count = 0
+    elems_checked_count = 0
     for i in range(len(test_predict_real_combined_as_mtx_sorted_by_predict)):
         predict_val = test_predict_real_combined_as_mtx_sorted_by_predict[i][1]
         prediction_match_count += int(predict_val == must_be_prediction)
@@ -65,10 +66,12 @@ def _get_number_of_prediction_matches_of_top_scores(test_predict_real_combined_a
         if match_rate < MIN_RATE_OF_MATCHING_PREDICTIONS_ON_TEST_DATA:
             break
     number_of_test_elements_matching = prediction_match_count
-    total_elements_checked = elems_checked_count
-    total_match_rate_for_testet_elems = number_of_test_elements_matching / total_elements_checked
-    rate_of_elems_matching_vs_all_relevant_real_elems = 0.0
     usable_prediction_rate = None
+    total_elements_checked = elems_checked_count
+    total_match_rate_for_testet_elems = 0.0
+    rate_of_elems_matching_vs_all_relevant_real_elems = 0.0
+    if prediction_match_count > 0:
+        total_match_rate_for_testet_elems = number_of_test_elements_matching / total_elements_checked
     if number_of_test_elements_matching > 0 \
        and total_match_rate_for_testet_elems >= MIN_RATE_OF_MATCHING_PREDICTIONS_ON_TEST_DATA:
         rate_of_elems_matching_vs_all_relevant_real_elems = \
@@ -85,18 +88,6 @@ def _get_matching_item_count_of_real_values(test_predict_real_combined_as_mtx, m
     vect = test_predict_real_combined_as_mtx[:, column_containing_real_vals]
     count = len(vect[vect == must_be_prediction])
     return count
-
-
-def _get_relevant_test_prediction_items(test_predict_real_combined_as_mtx, must_be_prediction):
-    if must_be_prediction == 1:
-        # get predictions items predicting positive rate
-        test_predict_mtx_filtered = \
-            test_predict_real_combined_as_mtx[test_predict_real_combined_as_mtx[:, 0] >= .5]
-    elif must_be_prediction == 0:
-        # get predictions items predicting negative rate
-        test_predict_mtx_filtered = \
-            test_predict_real_combined_as_mtx[test_predict_real_combined_as_mtx[:, 0] < .5]
-    return test_predict_mtx_filtered
 
 
 def _sort_matrix(matrix_in, sort_direction, column_used_for_sorting=0):

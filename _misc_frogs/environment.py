@@ -35,7 +35,7 @@ class FolderGetterLocal:
     @classmethod
     def get_data_dump_root_folder(cls):
         data_in_root = cls._get_root_folder("30_data_out")
-        return data_in_root
+        return data_in_root.joinpath("local")
 
     @staticmethod
     def _get_root_folder(dir_to_search):

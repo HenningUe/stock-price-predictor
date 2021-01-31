@@ -5,6 +5,7 @@ from keras import models, layers, optimizers, metrics, regularizers  # @UnusedIm
 
 from keras_coach.training._all import debug, traindata
 from keras_coach.training.scalar_regression._common import extract_np_labels_from_df_raw
+from ._predict_test import test_predict
 from ._callbacks import EarlyStoppingCustom
 
 
@@ -28,7 +29,7 @@ def objective_func(x_train_data, y_label_df_raw, params):
     if debug.HYPEROPT_SIMULATE:
         acc = -random.random()
     else:
-        callb = EarlyStoppingCustom(dict(x=data['x_validate'], y=data['y_validate']))
+        callb = EarlyStoppingCustom(dict(x=data['x_validate'], y=data['y_validate']), test_predict)
         MAX_EPOCHS = 100
         model.fit(data['x_train'], data['y_train'],
                   epochs=MAX_EPOCHS, verbose=False,

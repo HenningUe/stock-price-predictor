@@ -46,7 +46,7 @@ def _get_stored_reference_value(params):
     file_ = _get_filep_model_description(params)
     with file_.open("r") as f:
         ydump = f.read()
-        params = yaml.load(ydump)
+        params = yaml.full_load(ydump)
     return params['reference_value']
 
 

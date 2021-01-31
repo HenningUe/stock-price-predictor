@@ -1,12 +1,14 @@
 
 import random
 
+import tensorflow as tf
 from keras import models, layers, optimizers, metrics, regularizers, losses  # @UnusedImport
 
-from keras_coach.training._all import traindata, debug
+from keras_coach.training._all import traindata, colab_hw, debug
 from keras_coach.training.binary_crossentropy._common import extract_np_labels_from_df_raw
 from ._callbacks import EarlyStoppingCustom
 from ._common import get_class_weights
+from ._predict_test import test_predict
 
 # https://towardsdatascience.com/practical-tips-for-class-imbalance-in-binary-classification-6ee29bcdb8a7
 # from sklearn.utils.class_weight import compute_class_weight
@@ -36,7 +38,8 @@ def objective_func(x_train_data, y_label_df_raw, params):
         acc = -random.random()
     else:
         class_weights = get_class_weights(data['y_train'])
-        callb = EarlyStoppingCustom(dict(x=data['x_validate'], y=data['y_validate']))
+        callb = EarlyStoppingCustom(dict(x=data['x_validate'], y=data['y_validate']), test_predict,
+                                    patience=8)
         MAX_EPOCHS = 100
         model.fit(data['x_train'], data['y_train'],
                   epochs=MAX_EPOCHS, verbose=False,
@@ -45,8 +48,8 @@ def objective_func(x_train_data, y_label_df_raw, params):
 
         if callb.best_guess is not None:
             save_mdl_params = dict(epoch=callb.best_guess['epoch'],
-                                   reference_value=float(callb.best_guess['rate_of_elems_matching_vs_all_relevant_real_elems']))
-        acc = -float(callb.best_guess['rate_of_elems_matching_vs_all_relevant_real_elems'])
+                                   reference_value=float(callb.best_guess['reference_value']))
+        acc = -float(callb.best_guess['reference_value'])
 
     return dict(acc=acc, model=model, save_mdl_params=save_mdl_params)
 
@@ -79,9 +82,23 @@ def _finish_and_compile_mdl(model):
     model.add(layers.Dense(1, activation='sigmoid'))
     if debug.HYPEROPT_SIMULATE:
         model = None
-    else:
+
+    elif not colab_hw.is_to_be_run_on_tpu():
         opt = optimizers.RMSprop(lr=0.001)
         model.compile(optimizer=opt,
                       loss=losses.binary_crossentropy,
                       metrics=['accuracy'])
+
+    elif colab_hw.is_to_be_run_on_tpu():
+        tpu_address = colab_hw.get_tpu_address()
+        resolver = tf.distribute.cluster_resolver.TPUClusterResolver(tpu_address)
+        tf.config.experimental_connect_to_cluster(resolver)
+        tf.tpu.experimental.initialize_tpu_system(resolver)
+        strategy = tf.distribute.experimental.TPUStrategy(resolver)
+        with strategy.scope():
+            opt = tf.optimizers.RMSprop(learning_rate=0.001)
+            model.compile(optimizer=opt,
+                          loss=tf.keras.losses.binary_crossentropy,
+                          metrics=['accuracy'])
+
     return model
