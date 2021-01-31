@@ -23,13 +23,14 @@ def main():
 
 
 def run_single_module(train_mod):
-    global RUN_MDL_FUNCS_INDIVIDUAL
+    global RUN_MDL_FUNCS_INDIVIDUAL, MAX_EVALUATIONS
     loggermod.init_logger(misc.get_modul_name_pure(train_mod) + "__hyperopt")
     logger = loggermod.get_logger()
     logger.info("Start hyperopt")
     logger.info("Train module: {}".format(misc.get_modul_name_pure(train_mod)))
     logger.info("Is 'HYPEROPT_SIMULATE': {}".format(debug.HYPEROPT_SIMULATE))
     logger.info("Is 'RUN_MDL_FUNCS_INDIVIDUAL': {}".format(RUN_MDL_FUNCS_INDIVIDUAL))
+    logger.info("'MAX_EVALUATIONS': {}".format(MAX_EVALUATIONS))
     space = space_and_mdl_templates.get_hyperopt_space(get_functions_individual=RUN_MDL_FUNCS_INDIVIDUAL)
     for func_space in space:
         if RUN_MDL_FUNCS_INDIVIDUAL:
@@ -68,4 +69,5 @@ def _get_train_modules():
         return [binary_crossentropy]
 
 
-main()
+if __name__ == "__main__":
+    main()
