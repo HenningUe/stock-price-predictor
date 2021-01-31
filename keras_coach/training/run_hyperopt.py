@@ -4,11 +4,11 @@ from pprint import pprint  # @UnusedImport
 
 import hyperopt as hypopt
 
-from _misc_frogs import loggermod
+from _misc_frogs import loggermod, environment, hyperopt_monkeyp  # @UnusedImport
 from keras_coach.training._all import debug, hyperopt_store, swish, misc
 from keras_coach.training._all.models_hyperopt import obj_func_wrapper, space_and_mdl_templates
 
-MAX_EVALUATIONS = 30  # 200
+MAX_EVALUATIONS = 200 if environment.runs_in_colab() else 20
 RUN_MDL_FUNCS_INDIVIDUAL = True
 debug.HYPEROPT_SIMULATE = False
 

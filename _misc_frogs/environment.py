@@ -11,6 +11,10 @@ def get_runtime_env():
         return "local"
 
 
+def runs_in_colab():
+    return get_runtime_env() == "colab"
+
+
 def get_data_source_root_folder():
     if get_runtime_env() == "local":
         return FolderGetterLocal.get_data_source_root_folder()
