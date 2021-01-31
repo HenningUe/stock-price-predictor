@@ -1,14 +1,14 @@
 
 import random
 
-import tensorflow as tf
 from keras import models, layers, optimizers, metrics, regularizers, losses  # @UnusedImport
 
-from keras_coach.training._all import traindata, colab_hw, debug
+from keras_coach.training._all import traindata, debug
 from keras_coach.training.binary_crossentropy._common import extract_np_labels_from_df_raw
 from ._callbacks import EarlyStoppingCustom
 from ._common import get_class_weights
 from ._predict_test import test_predict
+from ._mdl_compile import finish_and_compile_mdl
 
 # https://towardsdatascience.com/practical-tips-for-class-imbalance-in-binary-classification-6ee29bcdb8a7
 # from sklearn.utils.class_weight import compute_class_weight
@@ -57,48 +57,22 @@ def objective_func(x_train_data, y_label_df_raw, params):
 def _build_model_dense_pure(x_train_data, params):
     from keras_coach.training._all.models_hyperopt import space_and_mdl_templates
     model = space_and_mdl_templates.build_model_dense_pure(x_train_data, params)
-    return _finish_and_compile_mdl(model)
+    return finish_and_compile_mdl(model)
 
 
 def _build_model_rnn_lstm_pure(x_train_data, params):
     from keras_coach.training._all.models_hyperopt import space_and_mdl_templates
     model = space_and_mdl_templates.build_model_rnn_lstm_pure(x_train_data, params)
-    return _finish_and_compile_mdl(model)
+    return finish_and_compile_mdl(model)
 
 
 def _build_model_cnn_pure(x_train_data, params):
     from keras_coach.training._all.models_hyperopt import space_and_mdl_templates
     model = space_and_mdl_templates.build_model_cnn_pure(x_train_data, params)
-    return _finish_and_compile_mdl(model)
+    return finish_and_compile_mdl(model)
 
 
 def _build_model_rnn_lstm_with_cnn(x_train_data, params):
     from keras_coach.training._all.models_hyperopt import space_and_mdl_templates
     model = space_and_mdl_templates.build_model_rnn_lstm_with_cnn(x_train_data, params)
-    return _finish_and_compile_mdl(model)
-
-
-def _finish_and_compile_mdl(model):
-    model.add(layers.Dense(1, activation='sigmoid'))
-    if debug.HYPEROPT_SIMULATE:
-        model = None
-
-    elif not colab_hw.is_to_be_run_on_tpu():
-        opt = optimizers.RMSprop(lr=0.001)
-        model.compile(optimizer=opt,
-                      loss=losses.binary_crossentropy,
-                      metrics=['accuracy'])
-
-    elif colab_hw.is_to_be_run_on_tpu():
-        tpu_address = colab_hw.get_tpu_address()
-        resolver = tf.distribute.cluster_resolver.TPUClusterResolver(tpu_address)
-        tf.config.experimental_connect_to_cluster(resolver)
-        tf.tpu.experimental.initialize_tpu_system(resolver)
-        strategy = tf.distribute.experimental.TPUStrategy(resolver)
-        with strategy.scope():
-            opt = tf.optimizers.RMSprop(learning_rate=0.001)
-            model.compile(optimizer=opt,
-                          loss=tf.keras.losses.binary_crossentropy,
-                          metrics=['accuracy'])
-
-    return model
+    return finish_and_compile_mdl(model)

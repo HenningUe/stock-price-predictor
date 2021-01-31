@@ -59,7 +59,7 @@ def _run_single_scenario(train_mod, space):
 
 def _get_train_modules():
     from keras_coach.training import scalar_regression, binary_crossentropy  # @UnusedImport
-    x = 2
+    x = 1
     if x == 0:
         return [scalar_regression, binary_crossentropy]
     elif x == 1:

@@ -1,5 +1,6 @@
 
 from keras import models, layers, optimizers, metrics  # @UnusedImport
+from ._mdl_compile import finish_and_compile_mdl
 
 
 def build_model_recurrent_lstm(x_train_data):
@@ -8,9 +9,7 @@ def build_model_recurrent_lstm(x_train_data):
                                     input_shape=(x_train_data.shape[1], x_train_data.shape[2])))
     model.add(layers.recurrent.LSTM(200, return_sequences=False))
     model.add(layers.Dense(80, activation='swish'))
-    model.add(layers.Dense(1))
-    opt = optimizers.RMSprop(lr=0.001)
-    model.compile(optimizer=opt, loss='mse', metrics=['mae'])
+    model = finish_and_compile_mdl(model)
     return model
 
 
@@ -27,10 +26,7 @@ def build_model_recurrent_lstm_with_cnn(x_train_data):
     model.add(layers.normalization.BatchNormalization())
     model.add(layers.Dense(60, activation='swish'))
     model.add(layers.Dense(1))
-
-    opt = optimizers.RMSprop(lr=0.0001)
-    model.compile(optimizer=opt, loss='mse', metrics=['mae'])
-    return model
+    model = finish_and_compile_mdl(model)
 
 
 def build_model_dense_pure(x_train_data):
@@ -47,11 +43,7 @@ def build_model_dense_pure(x_train_data):
 #     model.add(layers.Dropout(0.3))
 #     model.add(layers.Dense(128, activation='tanh'))
     model.add(layers.Flatten())
-    model.add(layers.Dense(1))
-
-    opt = optimizers.RMSprop(lr=0.001)
-    model.compile(optimizer=opt, loss='mse', metrics=['mae'])
-    return model
+    model = finish_and_compile_mdl(model)
 
 
 def build_model_cnn(x_train_data):
@@ -66,11 +58,7 @@ def build_model_cnn(x_train_data):
     model.add(layers.Flatten())
     model.add(layers.Dropout(0.2))
     model.add(layers.Dense(300, activation='swish'))
-    model.add(layers.Dense(1))
-    # opt = optimizers.SGD(lr=0.002)
-    opt = optimizers.RMSprop(lr=0.001)
-    model.compile(optimizer=opt, loss='mse', metrics=['mae'])
-    return model
+    model = finish_and_compile_mdl(model)
 
 
 class BuildMdlFuncs:

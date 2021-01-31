@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from keras import models, layers, metrics, optimizers, losses, regularizers, activations  # @UnusedImport
+from ._mdl_compile import finish_and_compile_mdl
 
 
 def build_model_dense_pure(x_train_data):
@@ -13,12 +14,7 @@ def build_model_dense_pure(x_train_data):
     model.add(layers.Dropout(0.2))
     model.add(layers.Dense(20, activation='swish', kernel_regularizer=regularizers.l1(0.005)))
     model.add(layers.Flatten())
-    model.add(layers.Dense(1, activation='sigmoid'))
-    # opt = optimizers.SGD(lr=0.0005)
-    opt = optimizers.RMSprop(lr=0.001)
-    model.compile(optimizer=opt,
-                  loss=losses.binary_crossentropy,
-                  metrics=['accuracy'])
+    model = finish_and_compile_mdl(model)
     return model
 
 
@@ -30,12 +26,7 @@ def build_model_cnn(x_train_data):
     model.add(layers.Flatten())
     # model.add(layers.Dropout(0.1))
     model.add(layers.Dense(64, activation='relu'))
-    model.add(layers.Dense(1, activation='sigmoid'))
-    # opt = optimizers.SGD(lr=0.002)
-    opt = optimizers.RMSprop(lr=0.001)
-    model.compile(optimizer=opt,
-                  loss=losses.binary_crossentropy,
-                  metrics=['accuracy'])
+    model = finish_and_compile_mdl(model)
     return model
 
 

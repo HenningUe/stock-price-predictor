@@ -7,6 +7,7 @@ from keras_coach.training._all import debug, traindata
 from keras_coach.training.scalar_regression._common import extract_np_labels_from_df_raw
 from ._predict_test import test_predict
 from ._callbacks import EarlyStoppingCustom
+from ._mdl_compile import finish_and_compile_mdl
 
 
 def objective_func(x_train_data, y_label_df_raw, params):
@@ -46,32 +47,22 @@ def objective_func(x_train_data, y_label_df_raw, params):
 def _build_model_dense_pure(x_train_data, params):
     from keras_coach.training._all.models_hyperopt import space_and_mdl_templates
     model = space_and_mdl_templates.build_model_dense_pure(x_train_data, params)
-    return _finish_and_compile_mdl(model)
+    return finish_and_compile_mdl(model)
 
 
 def _build_model_rnn_lstm_pure(x_train_data, params):
     from keras_coach.training._all.models_hyperopt import space_and_mdl_templates
     model = space_and_mdl_templates.build_model_rnn_lstm_pure(x_train_data, params)
-    return _finish_and_compile_mdl(model)
+    return finish_and_compile_mdl(model)
 
 
 def _build_model_cnn_pure(x_train_data, params):
     from keras_coach.training._all.models_hyperopt import space_and_mdl_templates
     model = space_and_mdl_templates.build_model_cnn_pure(x_train_data, params)
-    return _finish_and_compile_mdl(model)
+    return finish_and_compile_mdl(model)
 
 
 def _build_model_rnn_lstm_with_cnn(x_train_data, params):
     from keras_coach.training._all.models_hyperopt import space_and_mdl_templates
     model = space_and_mdl_templates.build_model_rnn_lstm_with_cnn(x_train_data, params)
-    return _finish_and_compile_mdl(model)
-
-
-def _finish_and_compile_mdl(model):
-    model.add(layers.Dense(1))
-    if debug.HYPEROPT_SIMULATE:
-        model = None
-    else:
-        opt = optimizers.RMSprop(lr=0.001)
-        model.compile(optimizer=opt, loss='mse', metrics=['mae'])
-    return model
+    return finish_and_compile_mdl(model)
