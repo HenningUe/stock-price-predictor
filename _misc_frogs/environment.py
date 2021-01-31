@@ -63,8 +63,8 @@ class FolderGetterColab:
 
     @classmethod
     def get_data_source_root_folder(cls):
-        return "/content/gdrive/My Drive/Colab/DataFrogDataSource"
+        return pathlib.Path("/content/gdrive/My Drive/Colab/DataFrogDataSource")
 
     @classmethod
     def get_data_dump_root_folder(cls):
-        return "/content/gdrive/My Drive/Colab/DataFrogDump"
+        return pathlib.Path("/content/gdrive/My Drive/Colab/DataFrogDump")
