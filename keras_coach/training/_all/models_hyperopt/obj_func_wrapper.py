@@ -17,9 +17,10 @@ class ObjectiveFuncBin:
         self.train_module = train_module
 
     def objective_func(self, params):
+        logger = loggermod.get_logger()
         data_day_len = params['data_day_len']
         if debug.HYPEROPT_SIMULATE:
-            loggermod.get_logger().info("data_day_len: {}".format(data_day_len))
+            logger.info("data_day_len: {}".format(data_day_len))
             data_day_len = 3
         x_train_data, y_label_df_raw = traindata.get_training_data(data_day_len)
 
@@ -38,10 +39,12 @@ class ObjectiveFuncBin:
                     model_store.save_model(model, save_mdl_params, rtn['acc'])
             obj_func_rtn = dict(loss=rtn['acc'], status=hypopt.STATUS_OK)
         except Exception as ex:
-            loggermod.get_logger().exception(ex)
-            loggermod.get_logger().error("function: {}".format(func_params['funcname']))
-            loggermod.get_logger().error("related params:")
-            loggermod.get_logger().error(func_params)
+            logger.exception(ex)
+            logger.error("function: {}".format(func_params['funcname']))
+            logger.error("related params:")
+            logger.error(func_params)
             obj_func_rtn = dict(status=hypopt.STATUS_FAIL)
 
+        logger.error("Finished '{}'. Return: "
+                     .format(func_params['funcname'], obj_func_rtn))
         return obj_func_rtn
