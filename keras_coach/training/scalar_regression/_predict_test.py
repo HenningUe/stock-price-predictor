@@ -48,7 +48,7 @@ def test_predict(model, x_test, y_test):
     else:
         precision_total = (precision_positive + precision_negative) / 2
 
-    return dict(reference_value=float(ratio_total),
+    return dict(reference_value=float(precision_total),
                 ratio_total=float(ratio_total),
                 precision_positives=float(precision_positive),
                 ratio_only_positives=float(ratio_only_positives),

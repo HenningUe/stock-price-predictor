@@ -45,6 +45,5 @@ class ObjectiveFuncBin:
             logger.error(func_params)
             obj_func_rtn = dict(status=hypopt.STATUS_FAIL)
 
-        logger.error("Finished '{}'. Return: "
-                     .format(func_params['funcname'], obj_func_rtn))
+        logger.info("Finished '{}'. Return: {}".format(func_params['funcname'], obj_func_rtn))
         return obj_func_rtn
