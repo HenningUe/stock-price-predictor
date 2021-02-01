@@ -45,8 +45,7 @@ def load_model(params):
 def _get_stored_reference_value(params):
     file_ = _get_filep_model_description(params)
     with file_.open("r") as f:
-        ydump = f.read()
-        params = yaml.load(ydump, yaml.FullLoader)
+        params = yaml.safe_load(f)
     return params['reference_value']
 
 
