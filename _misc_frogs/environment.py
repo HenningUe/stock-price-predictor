@@ -22,9 +22,14 @@ def get_data_source_root_folder():
         return FolderGetterColab.get_data_source_root_folder()
 
 
-def get_data_dump_root_folder():
-    if get_runtime_env() == "local":
+def get_data_dump_root_folder(environment=None):
+    assert(environment in [None, 'local', 'colab', 'localcolab'])
+    if environment is None:
+        environment = get_runtime_env()
+    if environment == 'local':
         return FolderGetterLocal.get_data_dump_root_folder()
+    elif environment == 'localcolab':
+        return FolderGetterLocalColab.get_data_dump_root_folder()
     else:
         return FolderGetterColab.get_data_dump_root_folder()
 
@@ -57,6 +62,14 @@ class FolderGetterLocal:
             lastdir = cdir
         if r_path is not None:
             return r_path
+
+
+class FolderGetterLocalColab(FolderGetterLocal):
+
+    @classmethod
+    def get_data_dump_root_folder(cls):
+        data_in_root = cls._get_root_folder("30_data_out")
+        return data_in_root.joinpath("colab")
 
 
 class FolderGetterColab:

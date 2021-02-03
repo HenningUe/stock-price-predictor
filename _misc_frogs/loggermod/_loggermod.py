@@ -71,20 +71,22 @@ class LoggerClass(object):
             return
         self.logger.setLevel(logging.INFO)
 
-        # File-Handler for Info
         log_dir = self._get_logger_path()
         log_dir.mkdir(parents=True, exist_ok=True)
-        log_file_fullfilepath = log_dir.joinpath(self.logger_name + u".log.txt")
-        fh1 = RotatingFileHandler2(str(log_file_fullfilepath), maxBytes=6 * 1024, backupCount=2)
-        self._set_default_formatter(fh1)
-        self.logger.addHandler(fh1)
+
+        # File-Handler for Info
+        if False:
+            log_file_fullfilepath = log_dir.joinpath(self.logger_name + u".log.txt")
+            fh1 = RotatingFileHandler2(str(log_file_fullfilepath), maxBytes=6 * 1024, backupCount=2)
+            self._set_default_formatter(fh1)
+            self.logger.addHandler(fh1)
 
         # File-Handler for Error
         log_dir = self._get_logger_path()
         log_dir = log_dir.joinpath(u"error")
         log_dir.mkdir(parents=True, exist_ok=True)
         log_file_fullfilepath = log_dir.joinpath(self.logger_name + u"_error.log.txt")
-        fh2 = RotatingFileHandler2(str(log_file_fullfilepath), maxBytes=6 * 1024, backupCount=2)
+        fh2 = RotatingFileHandler2(str(log_file_fullfilepath), maxBytes=20 * 1024, backupCount=2)
         self._set_default_formatter(fh2)
         fh2.setLevel(logging.ERROR)  # @UndefinedVariable
         self.logger.addHandler(fh2)

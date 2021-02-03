@@ -2,7 +2,9 @@
 
 from pprint import pprint  # @UnusedImport
 
+import pickle
 import hyperopt as hypopt
+import cloudpickle
 
 from _misc_frogs import loggermod, environment
 from keras_coach.training._all import debug, hyperopt_store, swish, misc, colab_hw
@@ -11,7 +13,16 @@ from keras_coach.training._all.models_hyperopt import obj_func_wrapper, space_an
 
 MAX_EVALUATIONS = 130 if environment.runs_in_colab() else 20
 RUN_MDL_FUNCS_INDIVIDUAL = True
-debug.HYPEROPT_SIMULATE = False
+debug.HYPEROPT_SIMULATE = True
+
+
+def m_patch():
+    # monkey patch to replace fancy functions by original pickle ones
+    cloudpickle.dump = pickle.dump
+    cloudpickle.load = pickle.load
+
+
+m_patch()
 
 
 def main(func_name=None):
@@ -25,7 +36,7 @@ def main(func_name=None):
 # rnn_lstm_pure
 
 
-def run_single_module(train_mod, func_name=None):
+def run_single_module(train_mod, func_name_to_use=None):
     global RUN_MDL_FUNCS_INDIVIDUAL, MAX_EVALUATIONS
     loggermod.init_logger(misc.get_modul_name_pure(train_mod) + "__hyperopt")
     logger = loggermod.get_logger()
@@ -36,32 +47,54 @@ def run_single_module(train_mod, func_name=None):
     logger.info("'MAX_EVALUATIONS': {}".format(MAX_EVALUATIONS))
     logger.info("User colab hardware: {}".format(colab_hw.get_hw_support_type()))
     space = space_and_mdl_templates.get_hyperopt_space(get_functions_individual=RUN_MDL_FUNCS_INDIVIDUAL)
+    algo_func = hypopt.tpe.suggest
     for func_space in space:
+        c_func_name = None
         if RUN_MDL_FUNCS_INDIVIDUAL:
-            if func_name is not None and not func_name.lower() == func_space['funcname'].lower():
+            c_func_name = func_space['funcname']
+            if func_name_to_use is not None and not func_name_to_use.lower() == c_func_name.lower():
                 continue
-            logger.info("Running hyperopt space for func: {}".format(func_space['funcname']))
-        _run_single_scenario(train_mod, func_space)
+            logger.info("Running hyperopt space for func: {}".format(c_func_name))
+        _run_single_scenario(train_mod, func_space, c_func_name, algo_func)
+
+    # delete all trials objects after successful termination of all trials
+    for func_space in space:
+        c_func_name = None
+        if RUN_MDL_FUNCS_INDIVIDUAL:
+            c_func_name = func_space['funcname']
+        params = _get_func_signature_params(train_mod, algo_func, c_func_name, MAX_EVALUATIONS)
+        hyperopt_store.delete_hyperopt_trial(params)
 
 
-def _run_single_scenario(train_mod, space):
+def _run_single_scenario(train_mod, space, func_name, algo_func):
     global MAX_EVALUATIONS
     logger = loggermod.get_logger()
     max_evals = MAX_EVALUATIONS
     if debug.HYPEROPT_SIMULATE:
-        max_evals = 20
+        max_evals = 10
     f_nn = obj_func_wrapper.get_objective_func_wrapped(train_mod)
-    algo_func = hypopt.tpe.suggest
-    trials = hypopt.Trials()
+    params = _get_func_signature_params(train_mod, algo_func, func_name, max_evals)
+    trials = hyperopt_store.load_hyperopt_trial(params)
+    if trials is not None and len(trials.tids) == max_evals:
+        logger.info('Already went through in last run. Abortion.')
+        return
+    elif trials is not None and len(trials.tids) > 0:
+        logger.info('Continue at trial no. {}'.format(len(trials.tids) + 1))
+    hyperopt_store.save_hyperopt_decription(params)
+    trials_save_file_path = hyperopt_store.get_filep_hyperopt_trails_obj(params)
     best_trial = hypopt.fmin(f_nn, space, algo=algo_func, max_evals=max_evals,
-                             trials=trials, verbose=True)
-
-    params = dict(train_module=misc.get_modul_name_pure(train_mod), max_evals=max_evals,
-                  algo_func=".".join([algo_func.__module__, algo_func.__name__]))
-    hyperopt_store.save_hyperopt_trial(params, best_trial, trials)
+                             trials=trials, verbose=True, trials_save_file=str(trials_save_file_path))
+    hyperopt_store.save_hyperopt_end(params, best_trial)
 
     logger.info('best_trial: ', best_trial)
     logger.info("Finished")
+
+
+def _get_func_signature_params(train_mod, algo_func, object_train_func, max_evals):
+    params = dict(train_module=misc.get_modul_name_pure(train_mod),
+                  func_name=object_train_func, max_evals=max_evals,
+                  algo_func=".".join([algo_func.__module__, algo_func.__name__]))
+    return params
 
 
 def _get_train_modules():

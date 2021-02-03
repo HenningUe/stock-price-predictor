@@ -9,6 +9,7 @@ from keras import models
 from _misc_frogs.environment import get_data_dump_root_folder
 from _misc_frogs.make_hash import make_hash
 from _write_read import datetime_to_str
+from . import debug
 
 
 class ModelBin():
@@ -37,24 +38,24 @@ class ModelBin():
     def load_meta_data(self):
         mdl_descr_file = _get_filep_model_description(self.dir)
         with open(mdl_descr_file, 'r') as yaml_file:
-            self.meta_data = yaml_file.read()
+            self.meta_data = yaml.safe_load(yaml_file)
 
     def load_model(self):
             self.model = load_model(self.dir)
 
 
-def get_models_sorted_by_reference_value(model_build_func=None):
-    models = get_models()
-    models = sorted(models, key=lambda x: x.ref_val)
+def get_models_sorted_by_reference_value(model_build_func=None, environment=None):
+    models = get_models(environment)
+    models = sorted(models, key=lambda x: x.ref_val, reverse=True)
     if model_build_func is not None:
         models = [m for m in models if m.model_build_func == model_build_func]
     return models
 
 
-def get_models():
+def get_models(environment=None):
     models = list()
-    root_dir = get_data_dump_root_folder()
-    for x in root_dir.iterdir():
+    mdl_root_dir = _get_model_root_dir(environment)
+    for x in mdl_root_dir.iterdir():
         if not x.is_dir():
             continue
         mdl = ModelBin(x)
@@ -144,12 +145,21 @@ def _get_filep_model_description(mdl_dir):
     return file_
 
 
-def _get_storage_dir_path(params):
+def _get_storage_dir_path(params, environment=None):
     params = copy.copy(params)
     params.pop('reference_value')
     hash_val = _get_hash(params)
-    root_dir = get_data_dump_root_folder()
-    dir_ = pathlib.Path(root_dir).joinpath("models", hash_val)
+    mdl_root_dir = _get_model_root_dir(environment)
+    dir_ = mdl_root_dir.joinpath(hash_val)
+    return dir_
+
+
+def _get_model_root_dir(environment=None):
+    root_dir = get_data_dump_root_folder(environment)
+    if debug.HYPEROPT_SIMULATE:
+        dir_ = pathlib.Path(root_dir).joinpath("simulate", "models")
+    else:
+        dir_ = pathlib.Path(root_dir).joinpath("models")
     return dir_
 
 
