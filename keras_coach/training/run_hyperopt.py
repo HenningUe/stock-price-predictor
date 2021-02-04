@@ -13,7 +13,8 @@ from keras_coach.training._all.models_hyperopt import obj_func_wrapper, space_an
 
 MAX_EVALUATIONS = 130 if environment.runs_in_colab() else 20
 RUN_MDL_FUNCS_INDIVIDUAL = True
-debug.HYPEROPT_SIMULATE = True
+HYPEROPT_SIMULATE = True
+debug.HYPEROPT_SIMULATE = False if environment.runs_in_colab() else HYPEROPT_SIMULATE
 
 
 def m_patch():
