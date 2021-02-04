@@ -11,10 +11,10 @@ from keras_coach.training._all import debug, hyperopt_store, swish, misc, colab_
 from keras_coach.training._all import hyperopt_monkeyp  # @UnusedImport
 from keras_coach.training._all.models_hyperopt import obj_func_wrapper, space_and_mdl_templates
 
-MAX_EVALUATIONS = 130 if environment.runs_in_colab() else 20
+MAX_EVALUATIONS = 130 if environment.runs_remote() else 20
 RUN_MDL_FUNCS_INDIVIDUAL = True
 HYPEROPT_SIMULATE = True
-debug.HYPEROPT_SIMULATE = False if environment.runs_in_colab() else HYPEROPT_SIMULATE
+debug.HYPEROPT_SIMULATE = False if environment.runs_remote() else HYPEROPT_SIMULATE
 
 
 def m_patch():

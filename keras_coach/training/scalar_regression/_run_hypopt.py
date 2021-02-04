@@ -32,7 +32,7 @@ def objective_func(x_train_data, y_label_df_raw, params):
         acc = -random.random()
     else:
         callb = EarlyStoppingCustom(dict(x=data['x_validate'], y=data['y_validate']), test_predict)
-        MAX_EPOCHS = 100 if environment.runs_in_colab() else 1
+        MAX_EPOCHS = 100 if environment.runs_remote() else 1
         model.fit(data['x_train'], data['y_train'],
                   epochs=MAX_EPOCHS, verbose=False,
                   validation_data=(data['x_validate'], data['y_validate']),
