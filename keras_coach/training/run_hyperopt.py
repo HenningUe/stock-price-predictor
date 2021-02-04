@@ -25,11 +25,11 @@ def m_patch():
 m_patch()
 
 
-def main(func_name=None):
+def main(func_name_to_use=None, func_name_not_to_use=None):
     swish.register_swish_activation_func()
     train_modules = _get_train_modules()
     for train_mod in train_modules:
-        run_single_module(train_mod, func_name)
+        run_single_module(train_mod, func_name_to_use, func_name_not_to_use)
     # hypopt.progress.default_callback(initial, total)
     # Save and reload evaluations > https://github.com/hyperopt/hyperopt/issues/267
 
