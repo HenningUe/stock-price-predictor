@@ -36,7 +36,7 @@ def main(func_name=None):
 # rnn_lstm_pure
 
 
-def run_single_module(train_mod, func_name_to_use=None):
+def run_single_module(train_mod, func_name_to_use=None, func_name_not_to_use=None):
     global RUN_MDL_FUNCS_INDIVIDUAL, MAX_EVALUATIONS
     loggermod.init_logger(misc.get_modul_name_pure(train_mod) + "__hyperopt")
     logger = loggermod.get_logger()
@@ -52,6 +52,8 @@ def run_single_module(train_mod, func_name_to_use=None):
         c_func_name = None
         if RUN_MDL_FUNCS_INDIVIDUAL:
             c_func_name = func_space['funcname']
+            if func_name_not_to_use is not None and func_name_not_to_use.lower() == c_func_name.lower():
+                continue
             if func_name_to_use is not None and not func_name_to_use.lower() == c_func_name.lower():
                 continue
             logger.info("Running hyperopt space for func: {}".format(c_func_name))
@@ -80,7 +82,8 @@ def _run_single_scenario(train_mod, space, func_name, algo_func):
         return
     elif trials is not None and len(trials.tids) > 0:
         logger.info('Continue at trial no. {}'.format(len(trials.tids) + 1))
-    hyperopt_store.save_hyperopt_decription(params)
+    else:
+        hyperopt_store.save_hyperopt_decription(params)
     trials_save_file_path = hyperopt_store.get_filep_hyperopt_trails_obj(params)
     best_trial = hypopt.fmin(f_nn, space, algo=algo_func, max_evals=max_evals,
                              trials=trials, verbose=True, trials_save_file=str(trials_save_file_path))
