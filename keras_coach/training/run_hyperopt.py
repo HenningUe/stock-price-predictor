@@ -11,9 +11,9 @@ from keras_coach.training._all import debug, hyperopt_store, swish, misc, colab_
 from keras_coach.training._all import hyperopt_monkeyp  # @UnusedImport
 from keras_coach.training._all.models_hyperopt import obj_func_wrapper, space_and_mdl_templates
 
-MAX_EVALUATIONS = 130 if environment.runs_remote() else 20
+MAX_EVALUATIONS = 130 if environment.runs_remote() else 130
 RUN_MDL_FUNCS_INDIVIDUAL = True
-HYPEROPT_SIMULATE = True
+HYPEROPT_SIMULATE = False
 debug.HYPEROPT_SIMULATE = False if environment.runs_remote() else HYPEROPT_SIMULATE
 
 
@@ -26,26 +26,27 @@ def m_patch():
 m_patch()
 
 
-def main(func_name_to_use=None, func_name_not_to_use=None):
+def main(func_name_to_use=None, func_name_not_to_use=None, max_evaluations=None):
     swish.register_swish_activation_func()
     train_modules = _get_train_modules()
     for train_mod in train_modules:
-        run_single_module(train_mod, func_name_to_use, func_name_not_to_use)
+        run_single_module(train_mod, func_name_to_use, func_name_not_to_use, max_evaluations)
     # hypopt.progress.default_callback(initial, total)
     # Save and reload evaluations > https://github.com/hyperopt/hyperopt/issues/267
 
 # rnn_lstm_pure
 
 
-def run_single_module(train_mod, func_name_to_use=None, func_name_not_to_use=None):
+def run_single_module(train_mod, func_name_to_use=None, func_name_not_to_use=None, max_evaluations=None):
     global RUN_MDL_FUNCS_INDIVIDUAL, MAX_EVALUATIONS
+    max_evaluations = MAX_EVALUATIONS if max_evaluations is None else max_evaluations
     loggermod.init_logger(misc.get_modul_name_pure(train_mod) + "__hyperopt")
     logger = loggermod.get_logger()
     logger.info("Start hyperopt")
     logger.info("Train module: {}".format(misc.get_modul_name_pure(train_mod)))
     logger.info("Is 'HYPEROPT_SIMULATE': {}".format(debug.HYPEROPT_SIMULATE))
     logger.info("Is 'RUN_MDL_FUNCS_INDIVIDUAL': {}".format(RUN_MDL_FUNCS_INDIVIDUAL))
-    logger.info("'MAX_EVALUATIONS': {}".format(MAX_EVALUATIONS))
+    logger.info("'MAX_EVALUATIONS': {}".format(max_evaluations))
     logger.info("User colab hardware: {}".format(colab_hw.get_hw_support_type()))
     space = space_and_mdl_templates.get_hyperopt_space(get_functions_individual=RUN_MDL_FUNCS_INDIVIDUAL)
     algo_func = hypopt.tpe.suggest

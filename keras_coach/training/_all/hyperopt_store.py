@@ -47,7 +47,8 @@ def load_hyperopt_trial(params):
 
 def delete_hyperopt_trial(params):
     file_ = get_filep_hyperopt_trails_obj(params)
-    file_.unlink(missing_ok=True)
+    if file_.is_file():
+        file_.unlink()
 
 
 def get_filep_hyperopt_trails_obj(params):
