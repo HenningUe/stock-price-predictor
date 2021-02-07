@@ -11,10 +11,12 @@ from keras_coach.training._all import debug, hyperopt_store, swish, misc, colab_
 from keras_coach.training._all import hyperopt_monkeyp  # @UnusedImport
 from keras_coach.training._all.models_hyperopt import obj_func_wrapper, space_and_mdl_templates
 
-MAX_EVALUATIONS = 130 if environment.runs_remote() else 130
+MAX_EVALUATIONS = 130 if environment.runs_remote() else 30
 RUN_MDL_FUNCS_INDIVIDUAL = True
-HYPEROPT_SIMULATE = False
+HYPEROPT_SIMULATE = True
 debug.HYPEROPT_SIMULATE = False if environment.runs_remote() else HYPEROPT_SIMULATE
+if debug.HYPEROPT_SIMULATE:
+    MAX_EVALUATIONS = 40
 
 
 def m_patch():
@@ -73,8 +75,6 @@ def run_single_module(train_mod, func_name_to_use=None, func_name_not_to_use=Non
 def _run_single_scenario(train_mod, space, func_name, algo_func, max_evaluations):
     logger = loggermod.get_logger()
     max_evals = max_evaluations
-    if debug.HYPEROPT_SIMULATE:
-        max_evals = 10
     f_nn = obj_func_wrapper.get_objective_func_wrapped(train_mod)
     params = _get_func_signature_params(train_mod, algo_func, func_name, max_evals)
     trials = hyperopt_store.load_hyperopt_trial(params)
@@ -82,7 +82,7 @@ def _run_single_scenario(train_mod, space, func_name, algo_func, max_evaluations
         logger.info('Already went through in last run. Abortion.')
         return
     elif trials is not None and len(trials.tids) > 0:
-        logger.info('Continue at trial no. {}'.format(len(trials.tids) + 1))
+        logger.info('Continue at trial no. {}'.format(len(trials.tids)))
     else:
         hyperopt_store.save_hyperopt_decription(params)
     trials_save_file_path = hyperopt_store.get_filep_hyperopt_trails_obj(params)

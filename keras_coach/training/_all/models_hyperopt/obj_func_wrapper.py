@@ -35,8 +35,7 @@ class ObjectiveFuncBin:
                                             model_build_func=func_params['funcname'],
                                             length_in_days=params['data_day_len']))
 
-                if not debug.HYPEROPT_SIMULATE:
-                    model_store.save_model(model, save_mdl_params, rtn['acc'])
+                model_store.save_model(model, save_mdl_params, msg_callb=logger.info)
             obj_func_rtn = dict(loss=rtn['acc'], status=hypopt.STATUS_OK)
         except Exception as ex:
             logger.exception(ex)

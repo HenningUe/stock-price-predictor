@@ -2,15 +2,12 @@
 import tensorflow as tf
 from keras import models, layers, optimizers, metrics, regularizers  # @UnusedImport
 
-from keras_coach.training._all import debug, colab_hw
+from keras_coach.training._all import colab_hw
 
 
 def finish_and_compile_mdl(model):
     model.add(layers.Dense(1))
-    if debug.HYPEROPT_SIMULATE:
-        model = None
-
-    elif not colab_hw.is_to_be_run_on_tpu():
+    if not colab_hw.is_to_be_run_on_tpu():
         opt = optimizers.RMSprop(lr=0.001)
         model.compile(optimizer=opt,
                       loss='mse', metrics=['mae'])

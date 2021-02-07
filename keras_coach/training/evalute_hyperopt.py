@@ -5,7 +5,7 @@ from keras_coach.training._all import swish, model_store, traindata
 
 
 def evaluate_best_models_by_test_data_all():
-    funcs = ['dense_pure', 'rnn_lstm_pure']
+    funcs = ['dense_pure', 'cnn_pure', 'rnn_lstm_pure', 'rnn_lstm_with_cnn']
     for func in funcs:
         print("===========================")
         print(func)
@@ -13,9 +13,15 @@ def evaluate_best_models_by_test_data_all():
 
 
 def evaluate_best_models_by_test_data_single_func(func_name):
-    mdl_bins = model_store.get_models_sorted_by_reference_value(func_name, 'localcolab')
+    mdl_bins = model_store.get_models_sorted_by_reference_value(func_name, 'local')
     # : :type best_mdl_bin: model_store.ModelBin
     max_bins = 3 if len(mdl_bins) >= 3 else len(mdl_bins)
+
+    xx = list()
+
+    def f(x):
+        xx.append(x)
+
     for best_mdl_bin in mdl_bins[:max_bins]:
         train_mod = getattr(keras_coach.training, best_mdl_bin.train_module)
 
@@ -31,8 +37,11 @@ def evaluate_best_models_by_test_data_single_func(func_name):
         best_mdl_bin.load_model()
         result = train_mod.test_predict(best_mdl_bin.model, data['x_test'], data['y_test'])
         print(best_mdl_bin.ref_val)
-        print(result['reference_value'])
-        print(best_mdl_bin.model.summary())
+        print("Calculated ref: {}".format(result['reference_value']))
+        is_good = "IS GOOOOOD" if result['reference_value'] >= best_mdl_bin.ref_val * 0.8 else "--"
+        print(is_good)
+        best_mdl_bin.model.summary(print_fn=f)
+        print(xx[0])
 
 
 if __name__ == "__main__":

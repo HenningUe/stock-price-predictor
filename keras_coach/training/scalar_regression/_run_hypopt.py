@@ -29,7 +29,9 @@ def objective_func(x_train_data, y_label_df_raw, params):
     model = build_model_func(data['x_train'], params)
     save_mdl_params = None
     if debug.HYPEROPT_SIMULATE:
-        acc = -random.random()
+        reference_value = random.random()
+        save_mdl_params = dict(epoch=random.randint(1, 20), reference_value=reference_value)
+        acc = -reference_value
     else:
         callb = EarlyStoppingCustom(dict(x=data['x_validate'], y=data['y_validate']), test_predict)
         MAX_EPOCHS = 100 if environment.runs_remote() else 1
