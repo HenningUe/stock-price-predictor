@@ -59,21 +59,20 @@ def run_single_module(train_mod, func_name_to_use=None, func_name_not_to_use=Non
             if func_name_to_use is not None and not func_name_to_use.lower() == c_func_name.lower():
                 continue
             logger.info("Running hyperopt space for func: {}".format(c_func_name))
-        _run_single_scenario(train_mod, func_space, c_func_name, algo_func)
+        _run_single_scenario(train_mod, func_space, c_func_name, algo_func, max_evaluations)
 
     # delete all trials objects after successful termination of all trials
     for func_space in space:
         c_func_name = None
         if RUN_MDL_FUNCS_INDIVIDUAL:
             c_func_name = func_space['funcname']
-        params = _get_func_signature_params(train_mod, algo_func, c_func_name, MAX_EVALUATIONS)
+        params = _get_func_signature_params(train_mod, algo_func, c_func_name, max_evaluations)
         hyperopt_store.delete_hyperopt_trial(params)
 
 
-def _run_single_scenario(train_mod, space, func_name, algo_func):
-    global MAX_EVALUATIONS
+def _run_single_scenario(train_mod, space, func_name, algo_func, max_evaluations):
     logger = loggermod.get_logger()
-    max_evals = MAX_EVALUATIONS
+    max_evals = max_evaluations
     if debug.HYPEROPT_SIMULATE:
         max_evals = 10
     f_nn = obj_func_wrapper.get_objective_func_wrapped(train_mod)
