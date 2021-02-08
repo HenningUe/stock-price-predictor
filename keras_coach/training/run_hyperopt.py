@@ -7,7 +7,7 @@ import hyperopt as hypopt
 import cloudpickle
 
 from _misc_frogs import loggermod, environment
-from keras_coach.training._all import debug, hyperopt_store, swish, misc, colab_hw
+from keras_coach.training._all import debug, hyperopt_store, swish, misc, colab_hw, multi_gpus
 from keras_coach.training._all import hyperopt_monkeyp  # @UnusedImport
 from keras_coach.training._all.models_hyperopt import obj_func_wrapper, space_and_mdl_templates
 
@@ -45,11 +45,14 @@ def run_single_module(train_mod, func_name_to_use=None, func_name_not_to_use=Non
     loggermod.init_logger(misc.get_modul_name_pure(train_mod) + "__hyperopt")
     logger = loggermod.get_logger()
     logger.info("Start hyperopt")
+    logger.info("Train environment: {}".format(environment.get_runtime_env()))
     logger.info("Train module: {}".format(misc.get_modul_name_pure(train_mod)))
     logger.info("Is 'HYPEROPT_SIMULATE': {}".format(debug.HYPEROPT_SIMULATE))
     logger.info("Is 'RUN_MDL_FUNCS_INDIVIDUAL': {}".format(RUN_MDL_FUNCS_INDIVIDUAL))
     logger.info("'MAX_EVALUATIONS': {}".format(max_evaluations))
-    logger.info("User colab hardware: {}".format(colab_hw.get_hw_support_type()))
+    if environment.get_runtime_env() == "colab":
+        logger.info("User colab hardware: {}".format(colab_hw.get_hw_support_type()))
+    logger.info("Number GPUs: {}".format(multi_gpus.multi_gpu_mdl_builder.number_of_gpus()))
     space = space_and_mdl_templates.get_hyperopt_space(get_functions_individual=RUN_MDL_FUNCS_INDIVIDUAL)
     algo_func = hypopt.tpe.suggest
     for func_space in space:

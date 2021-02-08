@@ -4,7 +4,7 @@ import random
 from keras import models, layers, optimizers, metrics, regularizers  # @UnusedImport
 
 from _misc_frogs import environment
-from keras_coach.training._all import debug, traindata
+from keras_coach.training._all import debug, traindata, multi_gpus
 from keras_coach.training.scalar_regression._common import extract_np_labels_from_df_raw
 from ._predict_test import test_predict
 from ._callbacks import EarlyStoppingCustom
@@ -26,7 +26,8 @@ def objective_func(x_train_data, y_label_df_raw, params):
     # Split the data up in train and test sets
     data = traindata.split_data(x_train_data, y_label_data)
 
-    model = build_model_func(data['x_train'], params)
+    with multi_gpus.multi_gpu_mdl_builder:
+        model = build_model_func(data['x_train'], params)
     save_mdl_params = None
     if debug.HYPEROPT_SIMULATE:
         reference_value = random.random()
