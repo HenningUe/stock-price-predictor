@@ -107,20 +107,22 @@ class ModelBin():
 
 
 def get_models_sorted_by_reference_value(model_build_func=None, environment=None):
-    models = get_models(environment)
+    models = get_models(environment=environment)
     models = sorted(models, key=lambda x: x.ref_val, reverse=True)
     if model_build_func is not None:
         models = [m for m in models if m.model_build_func == model_build_func]
     return models
 
 
-def get_models(environment=None):
+def get_models(model_ids=None, environment=None):
     models = list()
     mdl_root_dir = _get_model_root_dir(environment)
     if not mdl_root_dir.is_dir():
         return models
     for x in mdl_root_dir.iterdir():
         if not x.is_dir():
+            continue
+        if model_ids is not None and x.name not in model_ids:
             continue
         mdl = ModelBin(x)
         if mdl.is_mdl_dir_valid:

@@ -8,6 +8,29 @@ from _misc_frogs.make_hash import make_hash
 from . import debug
 
 
+def save_hyper_hyperopt_models(model_ids):
+    file_p = _get_filep_hyper_hyperopt_models()
+    dir_ = file_p.parent
+    dir_.mkdir(parents=True, exist_ok=True)
+    with file_p.open("w") as f:
+        ydump = yaml.dump(model_ids)
+        f.write(ydump)
+
+
+def load_hyper_hyperopt_models():
+    file_p = _get_filep_hyper_hyperopt_models()
+    with file_p.open("r") as f:
+        model_ids = yaml.safe_load(f)
+    return model_ids
+
+
+def _get_filep_hyper_hyperopt_models():
+    root_dir = get_data_dump_root_folder()
+    dir_ = pathlib.Path(root_dir).joinpath("hyperopt", "hyperhyper")
+    file = dir_.joinpath("bestmodelids.yaml")
+    return file
+
+
 def save_hyperopt_decription(params, suffix=""):
     dir_ = _get_storage_dir_path(params)
     dir_.mkdir(parents=True, exist_ok=True)
