@@ -26,8 +26,8 @@ def objective_func(x_train_data, y_label_df_raw, params):
     # Split the data up in train and test sets
     data = traindata.split_data(x_train_data, y_label_data)
 
-    with multi_gpus.multi_gpu_mdl_builder:
-        model = build_model_func(data['x_train'], params)
+    # with multi_gpus.multi_gpu_mdl_builder:
+    model = build_model_func(data['x_train'], params)
     save_mdl_params = None
     if debug.HYPEROPT_SIMULATE:
         reference_value = random.random()

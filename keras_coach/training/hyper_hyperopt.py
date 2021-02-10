@@ -8,7 +8,7 @@ from keras_coach.training._all import swish, model_store, traindata, hyperopt_st
 
 def evaluate_best_models_by_test_data_all():
     funcs = ['dense_pure', 'cnn_pure', 'rnn_lstm_pure', 'rnn_lstm_with_cnn']
-    funcs = ['dense_pure', 'rnn_lstm_with_cnn']
+    # funcs = ['dense_pure', 'rnn_lstm_with_cnn']
     good_mdl_ids = list()
     for func in funcs:
         print("===========================================================")
@@ -23,7 +23,7 @@ def evaluate_best_models_by_test_data_all():
 def evaluate_best_models_by_test_data_single_func(func_name, good_mdls):
     mdl_bins = model_store.get_models_sorted_by_reference_value(func_name, 'local')
     # : :type best_mdl_bin: model_store.ModelBin
-    MAX_MDLS_TEST = 4 if func_name == 'rnn_lstm_pure' else 33
+    MAX_MDLS_TEST = 10 if func_name == 'rnn_lstm_pure' else 40
     max_bins = MAX_MDLS_TEST if len(mdl_bins) >= MAX_MDLS_TEST else len(mdl_bins)
 
     for best_mdl_bin in mdl_bins[:max_bins]:
@@ -34,7 +34,7 @@ def evaluate_best_models_by_test_data_single_func(func_name, good_mdls):
         y_label_data = train_mod.extract_np_labels_from_df_raw(y_label_df_raw)
 
         # Split the data up in train and test sets
-        data = traindata.split_data(x_train_data, y_label_data, hyper_test_percent=0.06)
+        data = traindata.split_data(x_train_data, y_label_data, hyper_test_percent=1.2)
         best_mdl_bin.load_model()
         result = train_mod.test_predict(best_mdl_bin.model, data['x_test'], data['y_test'])
         is_good = result['reference_value'] >= 0.65

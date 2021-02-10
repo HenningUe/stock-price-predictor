@@ -8,14 +8,14 @@ uniformint = hypopt.hp.uniformint
 
 SPACE_DENSE_PURE = \
     dict(funcname='dense_pure',
-         units1_1_1=uniformint('units1_1_1', 16, 260),
-         dropout1_1_2=uniform('dropout1_1_2', .05, .5),
-         units1_1_2=uniformint('units1_1_2', 16, 260),
+         units1_1_1=uniformint('units1_1_1', 10, 100),
+         dropout1_1_2=uniform('dropout1_1_2', .05, .3),
+         units1_1_2=uniformint('units1_1_2', 10, 100),
          regular1_1_2=uniform('regular1_1_2', 0, .01),
          layers=choice('num_dense_layers1_1', [dict(num_dense_layers1_1=2),
                                                dict(num_dense_layers1_1=3,
-                                                    dropout1_1_3=uniform('dropout1_1_3', .05, .5),
-                                                    units1_1_3=uniformint('units1_1_3', 16, 260),
+                                                    dropout1_1_3=uniform('dropout1_1_3', .05, .3),
+                                                    units1_1_3=uniformint('units1_1_3', 10, 100),
                                                     regular1_1_3=uniform('regular1_1_3', 0, .01),
                                                     )
                                                ]
@@ -38,48 +38,48 @@ SPACE_RNN_LSTM_PURE = \
 
 SPACE_CNN_PURE = \
     dict(funcname='cnn_pure',
-         units3_1_1=uniformint('units3_1_1', 20, 160),
+         units3_1_1=uniformint('units3_1_1', 16, 100),
          kernel3_1_1=uniformint('kernel3_1_1', 4, 12),
          maxpool3_1_1=uniformint('maxpool3_1_1', 4, 12),
          dropout3_1_1=uniform('dropout3_1_1', .05, .3),
          layers=choice('num_cnn_layers3_1', [dict(num_cnn_layers3_1=1),
                                              dict(num_cnn_layers3_1=2,
-                                                  units3_1_2=uniformint('units3_1_2', 20, 160),
+                                                  units3_1_2=uniformint('units3_1_2', 16, 100),
                                                   kernel3_1_2=uniformint('kernel3_1_2', 4, 12),
                                                   maxpool3_1_2=uniformint('maxpool3_1_2', 4, 12),),
                                              dict(num_cnn_layers3_1=3,
-                                                  units3_1_3_1=uniformint('units3_1_3_1', 20, 160),
+                                                  units3_1_3_1=uniformint('units3_1_3_1', 16, 100),
                                                   kernel3_1_3_1=uniformint('kernel3_1_3_1', 4, 12),
                                                   maxpool3_1_3_1=uniformint('maxpool3_1_3_1', 4, 12),
-                                                  units3_1_3_2=uniformint('units3_1_3_2', 20, 160),
+                                                  units3_1_3_2=uniformint('units3_1_3_2', 16, 100),
                                                   kernel3_1_3_2=uniformint('kernel3_1_3_2', 4, 12),
                                                   maxpool3_1_3_2=uniformint('maxpool3_1_3_2', 4, 12),),
                                              ]
                        ),
          dropout3_1_3=uniform('dropout3_1_3', .05, .3),
-         units3_1_4=uniformint('units3_1_4', 16, 200),
+         units3_1_4=uniformint('units3_1_4', 10, 100),
          regular3_1_4=uniform('regular3_1_4', 0, .01),
          )
 
 SPACE_RNN_LSTM_WITH_CNN = \
     dict(funcname='rnn_lstm_with_cnn',
-         units4_1_1=uniformint('units4_1_1', 20, 160),
+         units4_1_1=uniformint('units4_1_1', 16, 100),
          kernel4_1_1=uniformint('kernel4_1_1', 4, 12),
          maxpool4_1_1=uniformint('maxpool4_1_1', 4, 12),
          layers_cnn=choice('num_cnn_layers4_1', [dict(num_cnn_layers4_1=1),
                                                  dict(num_cnn_layers4_1=2,
-                                                      units4_1_2=uniformint('units4_1_2', 20, 160),
+                                                      units4_1_2=uniformint('units4_1_2', 16, 100),
                                                       kernel4_1_2=uniformint('kernel4_1_2', 4, 12),
                                                       maxpool4_1_2=uniformint('maxpool4_1_2', 4, 12),),
                                                  ]),
-         units4_2_1=uniformint('units4_2_1', 40, 260),
-         recurrent_dropout4_2_1=uniform('recurrent_dropout4_2_1', .05, .5),
+         units4_2_1=uniformint('units4_2_1', 25, 120),
+         recurrent_dropout4_2_1=uniform('recurrent_dropout4_2_1', .05, .3),
          layers_lstm=choice('num_lstm_layers4_2', [dict(num_lstm_layers4_2=1),
                                                    dict(num_lstm_layers4_2=2,
-                                                        recurrent_dropout4_2_2=uniform('recurrent_dropout4_2_2', .05, .5),  # @IgnorePep8
-                                                        units4_2_2=uniformint('units4_2_2', 40, 260),)
+                                                        recurrent_dropout4_2_2=uniform('recurrent_dropout4_2_2', .05, .2),  # @IgnorePep8
+                                                        units4_2_2=uniformint('units4_2_2', 25, 140),)
                                                    ]),
-         units4_3_3=uniformint('units4_3_3', 40, 260),
+         units4_3_3=uniformint('units4_3_3', 25, 120),
          regular4_3_3=uniform('regular4_3_3', 0, .01),
          )
 

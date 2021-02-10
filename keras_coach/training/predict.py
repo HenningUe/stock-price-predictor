@@ -9,7 +9,7 @@ from keras_coach.training._all import swish, model_store, traindata, hyperopt_st
 def predict(x_data_in=None):
 
     swish.register_swish_activation_func()
-    mode = 1
+    mode = 0
     if mode == 0:
         model_ids = hyperopt_store.load_hyper_hyperopt_models()
         mdl_bins = model_store.get_models(model_ids=model_ids)
@@ -22,7 +22,15 @@ def predict(x_data_in=None):
             for i in range(2):
                 mdl_bins.append(mdl_binsx[i])
     vector_positive_predicts_1 = None
+
+    mdl_bins_filtered = list()
     for mdl_bin in mdl_bins:
+        print(mdl_bin.meta_data['model_build_func'])
+        if not mdl_bin.meta_data['model_build_func'] in ['dense_pure', 'cnn_pure', 'rnn_lstm_pure']:
+            continue
+        mdl_bins_filtered.append(mdl_bin)
+    print(len(mdl_bins_filtered))
+    for mdl_bin in mdl_bins_filtered[:2]:
         model = mdl_bin.load_model()
         x_data = x_data_in
         if callable(x_data):
@@ -46,7 +54,7 @@ def _get_n(x):
 
 
 def _hyper_hyper_validate():
-    TIME_ARGS = dict(date_start=dt.date(2019, 1, 20),
+    TIME_ARGS = dict(date_start=dt.date(2019, 10, 20),
                      date_end=dt.date(2020, 12, 22),)
     DAYS_TO_GET = [1, 2, 3, 4, 5, 6, 7]
     train_data_dict = traindata.get_training_data_for_multiple_day_lengths(DAYS_TO_GET, time_args=TIME_ARGS)
