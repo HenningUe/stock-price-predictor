@@ -16,9 +16,11 @@ def predict(x_data_in=None):
     elif mode == 1:
         mdl_bins = list()
         funcs = ['dense_pure', 'cnn_pure', 'rnn_lstm_pure', 'rnn_lstm_with_cnn']
+        funcs = ['cnn_pure', 'rnn_lstm_pure']
         for f in funcs:
             mdl_binsx = model_store.get_models_sorted_by_reference_value(f)
-            mdl_bins.append(mdl_binsx[0])
+            for i in range(2):
+                mdl_bins.append(mdl_binsx[i])
     vector_positive_predicts_1 = None
     for mdl_bin in mdl_bins:
         model = mdl_bin.load_model()
@@ -46,7 +48,7 @@ def _get_n(x):
 def _hyper_hyper_validate():
     TIME_ARGS = dict(date_start=dt.date(2019, 1, 20),
                      date_end=dt.date(2020, 12, 22),)
-    DAYS_TO_GET = [1, 2, 4, 5, 6]
+    DAYS_TO_GET = [1, 2, 3, 4, 5, 6, 7]
     train_data_dict = traindata.get_training_data_for_multiple_day_lengths(DAYS_TO_GET, time_args=TIME_ARGS)
 
     def extract(len_in_days):
