@@ -7,7 +7,7 @@ from keras_coach.training._all import swish, model_store, traindata, hyperopt_st
 
 
 def evaluate_best_models_by_test_data_all():
-    funcs = ['dense_pure', 'cnn_pure', 'rnn_lstm_pure', 'rnn_lstm_with_cnn']
+    funcs = ['dense_pure', 'cnn_pure', 'rnn_lstm_with_cnn']
     # funcs = ['dense_pure', 'rnn_lstm_with_cnn']
     good_mdl_ids = list()
     for func in funcs:

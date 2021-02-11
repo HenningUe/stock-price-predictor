@@ -1,6 +1,7 @@
 
 import random
 
+import numpy as np
 from keras import models, layers, optimizers, metrics, regularizers  # @UnusedImport
 
 from _misc_frogs import environment
@@ -34,7 +35,9 @@ def objective_func(x_train_data, y_label_df_raw, params):
         save_mdl_params = dict(epoch=random.randint(1, 20), reference_value=reference_value)
         acc = -reference_value
     else:
-        callb = EarlyStoppingCustom(dict(x=data['x_validate'], y=data['y_validate']), test_predict)
+        valid_data = dict(x=np.concatenate([data['x_train'], data['x_validate']]),
+                          y=np.concatenate([data['y_train'], data['y_validate']]))
+        callb = EarlyStoppingCustom(valid_data, test_predict)
         MAX_EPOCHS = 100 if environment.runs_remote() else 1
         model.fit(data['x_train'], data['y_train'],
                   epochs=MAX_EPOCHS, verbose=False,

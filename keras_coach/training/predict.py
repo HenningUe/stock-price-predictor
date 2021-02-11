@@ -16,21 +16,26 @@ def predict(x_data_in=None):
     elif mode == 1:
         mdl_bins = list()
         funcs = ['dense_pure', 'cnn_pure', 'rnn_lstm_pure', 'rnn_lstm_with_cnn']
-        funcs = ['cnn_pure', 'rnn_lstm_pure']
+        funcs = ['rnn_lstm_with_cnn']
         for f in funcs:
             mdl_binsx = model_store.get_models_sorted_by_reference_value(f)
-            for i in range(2):
-                mdl_bins.append(mdl_binsx[i])
+            mdl_bins.append(mdl_binsx[0])
+            mdl_bins.append(mdl_binsx[10])
+            mdl_bins.append(mdl_binsx[-1])
+        #             for i in range(6):
+        #                 ix = i
+        #                 mdl_bins.append(mdl_binsx[ix])
     vector_positive_predicts_1 = None
 
     mdl_bins_filtered = list()
     for mdl_bin in mdl_bins:
         print(mdl_bin.meta_data['model_build_func'])
-        if not mdl_bin.meta_data['model_build_func'] in ['dense_pure', 'cnn_pure', 'rnn_lstm_pure']:
+        if not mdl_bin.meta_data['model_build_func'] in ['dense_pure']:
             continue
         mdl_bins_filtered.append(mdl_bin)
+    mdl_bins_filtered = mdl_bins_filtered[:-2]
     print(len(mdl_bins_filtered))
-    for mdl_bin in mdl_bins_filtered[:2]:
+    for mdl_bin in mdl_bins_filtered:
         model = mdl_bin.load_model()
         x_data = x_data_in
         if callable(x_data):
