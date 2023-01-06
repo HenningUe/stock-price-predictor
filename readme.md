@@ -1,5 +1,5 @@
 # stock-price-predictor
-The attempt to predict future stock-prices with the help of minutes-accurate price history
+The (failed) attempt to predict future stock-prices with the help of minutes-accurate price history
 
 ### Description
 This projects is my attempt to get to know neuronal networks. 
